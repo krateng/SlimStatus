@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import yaml
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from datetime import datetime

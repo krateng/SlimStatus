@@ -38,7 +38,7 @@
 					<ul>
 					{% for target in targettype[0] %}
 						<li>
-							{{ target.name }} <span class='small secondary'>{{ target.desc }}</span>
+							{{ target.name }} <span class='small secondary'>{{ target.desc }} </span>​​
 							
 							<span class='status'>
 								<!--<span class='failed small'>{{ target.errors | join(',') }}</span>-->
@@ -64,7 +64,7 @@
 			
 			
 			</ul>
-			<p class=small> Last check: {{ meta.date }}</p>
+			<p class=small> Last check: {{ meta.date }} UTC</p>
 		</div>
 	</body>
 </html>

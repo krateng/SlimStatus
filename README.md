@@ -7,5 +7,5 @@ SlimStatus is a fork of the fantastic [tinystatus](https://github.com/bderenzo/t
 
 * Clone the repository and go to the created directory
 * Edit the config file `config.yml`
-* Generate status page `python3 slimstatus.py`
+* Generate status page `./slimstatus.py`
 * Serve the page with your favorite web server
