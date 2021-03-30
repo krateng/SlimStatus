@@ -3,42 +3,68 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>${title}</title>
+		<title>{{ config.title }}</title>
 		<style>
-			body { font-family: segoe ui,Roboto,Oxygen-Sans,Ubuntu,Cantarell,helvetica neue,Verdana,sans-serif; background-color:black; color:white; }
+			body { font-family: segoe ui,Roboto,Oxygen-Sans,Ubuntu,Cantarell,helvetica neue,Verdana,sans-serif; background-color:#181a1b; color:#e8e6e3; }
 			h1 { margin-top: 30px; }
 			ul { padding: 0px; }
 			li { list-style: none; margin-bottom: 2px; padding: 5px; border-bottom: 1px solid #ddd;  }
+			p { margin-top: 40px; }
 			.container { max-width: 600px; width: 100%; margin: 15px auto; }
 			.panel { text-align: center; padding: 10px; border: 0px; border-radius: 5px; }
 			.failed-bg  { color: white; background-color: #E25D6A; }
 			.success-bg { color: white; background-color: #52B86A; }
-			.failed  { color: #E25D6A; }
+			.failed  { color: #ff0f0f; }
 			.success { color: #52B86A; }
+			.partial { color: orange;}
 			.small { font-size: 80%; }
+			.secondary { color:grey; }
 			.status { float: right; }
 		</style>
 	</head>
 	<body>
 		<div class='container'>
 			<h1>Global status</h1>
-			{% if outages == 0 %}
+			{% if (services + machines) | rejectattr('operational') | list | length == 0 %}
 				<ul><li class='panel success-bg'>All Systems Operational</li></ul>
 			{% else %}
-				<ul><li class='panel failed-bg'>${outagenb} Outage(s)</li></ul>
+				{% set outages = (services + machines) | rejectattr('operational') | list | length %}
+				<ul><li class='panel failed-bg'>{{ outages }} Issue{{ 's' if outages != 1 }}</li></ul>
 			{% endif %}
-			<h1>Services</h1>
-			<ul>
-			{% for service in services %}
-				{% if service.operational %}
-					<li>{{ service.name }} <span class='status success'>Operational</span></li>
-				{% else %}
-					<li>{{ service.name }} <span class='small failed'>({{ service.status }})</span><span class='status failed'>Disrupted</span></li>
-				{% endif %}
+			
+			{% for targettype in [(services,'Services'),(machines,'Machines')] %}
+				{% if targettype[0] | length != 0 %}
+					<h1>{{ targettype[1] }}</h1>
+					<ul>
+					{% for target in targettype[0] %}
+						<li>
+							{{ target.name }} <span class='small secondary'>{{ target.desc }}</span>
+							
+							<span class='status'>
+								<!--<span class='failed small'>{{ target.errors | join(',') }}</span>-->
+								{% if target.operational %}
+									<span class='success'>Operational</span>
+								{% elif target.operational_4 %}
+									<span class='partial'title='{{ target.errors | join("\n") }}'>IPv4 Only</span>
+								{% elif target.operational_6 %}
+									<span class='partial'title='{{ target.errors | join("\n") }}'>IPv6 Only</span>
+								{% else %}
+									<span class='failed' title='{{ target.errors | join("\n") }}'>Disrupted</span>
+								{% endif %}
+							</span>
+						</li>
+
+						
+					{% endfor %}
 				
+				{% endif %}
+			
 			{% endfor %}
+			
+			
+			
 			</ul>
-			<p class=small> Last check: {{ (date +"%Y/%m/%d %H:%M:%S") }}</p>
+			<p class=small> Last check: {{ meta.date }}</p>
 		</div>
 	</body>
 </html>
