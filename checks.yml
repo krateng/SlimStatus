@@ -1,0 +1,14 @@
+services: []
+machines:
+- name: Constantinople (Main Router)
+  target_4: 192.168.178.1
+- name: Rome (Basement Router)
+  target_4: 192.168.178.2
+- name: Alexandria (Upstairs Router)
+  target_4: 192.168.178.3
+- name: Krakow (Main Server)
+  target_4: 192.168.178.31
+- name: Antioch (DNS)
+  target_4: 192.168.178.26
+- name: Budapest (NAS)
+  target_4: 192.168.178.36
